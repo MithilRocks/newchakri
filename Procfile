@@ -1,1 +1,1 @@
-web: gunicorn chakri:base
+web: gunicorn app:base
