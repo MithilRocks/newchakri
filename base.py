@@ -20,6 +20,8 @@ def home():
 
     data = {}
     data['css'] = url_for('static', filename='css/bootstrap.min.css')
+    data['js'] = url_for('static', filename='js/bootstrap.min.js')
+    
     data['bank_nifty_daily'] = bank_nifty_daily.angles()
     data['nifty_50_daily'] = nifty_50_daily.angles()
     
