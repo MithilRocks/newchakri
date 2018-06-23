@@ -1,10 +1,63 @@
 {% extends 'layout.html' %}
 {% block body_content %}
     <div class="jumbotron">
-        <h1 class="display-4">Chakri</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-        <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+
+        <h2>Nifty 50 Daily</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Date</th>
+                <th scope="col">H2</th>
+                <th scope="col">H3</th>
+                <th scope="col">C2</th>
+                <th scope="col">C3</th>
+                <th scope="col">L2</th>
+                <th scope="col">L3</th>
+                <th scope="col">G1</th>
+                <th scope="col">G2</th>
+                <th scope="col">G3</th>
+                <th scope="col">G4</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date, levels in data['nifty_50_daily'].items() %}
+                <tr>
+                <th scope="row">{{ date }}</th>
+                {% for name, level in levels.items() %}
+                <td>{{ level }}</td>
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Bank Nifty Daily</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Date</th>
+                <th scope="col">H2</th>
+                <th scope="col">H3</th>
+                <th scope="col">C2</th>
+                <th scope="col">C3</th>
+                <th scope="col">L2</th>
+                <th scope="col">L3</th>
+                <th scope="col">G1</th>
+                <th scope="col">G2</th>
+                <th scope="col">G3</th>
+                <th scope="col">G4</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date, levels in data['bank_nifty_daily'].items() %}
+                <tr>
+                <th scope="row">{{ date }}</th>
+                {% for name, level in levels.items() %}
+                <td>{{ level }}</td>
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
