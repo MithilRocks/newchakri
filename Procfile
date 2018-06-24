@@ -1,1 +1,1 @@
-web: gunicorn app:base
+web: gunicorn chakri.wsgi:application --log-file -
