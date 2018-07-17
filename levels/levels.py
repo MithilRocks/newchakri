@@ -68,6 +68,21 @@ class Levels:
         start = self.start_date - timedelta(days=7)
         self.data = get_history(symbol=self.symbol, start=start, end=self.end_date, index=True)
 
+    def averages(self, prices_list=[]):
+        total = 0
+        for x in prices_list:
+            total += x 
+        
+        return round(total/len(prices_list), 2)
+    
+    def gann_angle(self, n1, n2):
+        return round((n1*2 - n2), 2)
+
+class Daily(Levels):
+
+    def __init__(self, symbol, start=date(2015, 1, 1), end=date(2015, 1, 10)):
+        super().__init__(symbol, start, end)
+
     def angles(self):
         # get all the highs
         high = self.data['High'].values.tolist()
@@ -122,13 +137,3 @@ class Levels:
             i, j, k = i+1, j+1, k+1
 
         return {'levels':levels, 'camrilla': camrilla, 'pivot': pivot}
-
-    def averages(self, prices_list=[]):
-        total = 0
-        for x in prices_list:
-            total += x 
-        
-        return round(total/len(prices_list), 2)
-    
-    def gann_angle(self, n1, n2):
-        return round((n1*2 - n2), 2)

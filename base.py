@@ -12,10 +12,10 @@ def home():
     end_date = datetime.date.today()
     start_date = end_date - timedelta(days=7)
 
-    nifty_50_daily = levels.Levels("NIFTY 50", start_date, end_date)
+    nifty_50_daily = levels.Daily("NIFTY 50", start_date, end_date)
     nifty_50_daily.get_index_price_history()
 
-    bank_nifty_daily = levels.Levels("BANKNIFTY", start_date, end_date)
+    bank_nifty_daily = levels.Daily("BANKNIFTY", start_date, end_date)
     bank_nifty_daily.get_index_price_history()
 
     data = {}
