@@ -1,6 +1,7 @@
 from nsepy import get_history
 from datetime import date, datetime, timedelta
 import pandas as pd
+from collections import d
 
 class Camrilla:
     
@@ -137,3 +138,56 @@ class Daily(Levels):
             i, j, k = i+1, j+1, k+1
 
         return {'levels':levels, 'camrilla': camrilla, 'pivot': pivot}
+
+class Weekly(Levels):
+
+    def __init__(self, symbol, start=date(2015, 1, 1), end=date(2015, 1, 10)):
+        super().__init__(symbol, start, end)
+
+    def angles(self):
+        highs = self.data['High'].to_dict()
+        lows = self.data['Low'].to_dict()
+        closes = self.data['Close'].to_dict()
+
+        weekly, weekly_counter = {}, 0
+
+        for date, h in highs.items():
+            if weekly_counter == 0:
+                high = 0
+            
+            if h > high:
+                high = h
+
+            if weekly_counter == 4:
+                weekly[date] = {}
+                weekly[date]['High'] = high
+                weekly_counter = 0
+            else:
+                weekly_counter += 1
+
+        weekly_counter = 0
+
+        for date, l in lows.items():
+            if weekly_counter == 0:
+                low = l
+            
+            if l <= low:
+                low = l
+
+            if weekly_counter == 4:
+                weekly_counter = 0
+                weekly[date]['Low'] = low
+            else:
+                weekly_counter += 1
+
+        weekly_counter = 0
+        
+        for date, c in closes.items():
+            if date in weekly:
+                weekly[date]['Close'] = c
+
+        
+
+        
+
+        

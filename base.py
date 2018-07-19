@@ -3,12 +3,12 @@ from levels import levels
 from datetime import date, timedelta
 import datetime
 import json
+from dateutil.relativedelta import relativedelta, FR
 
 app = Flask(__name__)
 
-@app.route('/')
-@app.route('/home')
-def home():
+@app.route('/daily')
+def daily():
     end_date = datetime.date.today()
     start_date = end_date - timedelta(days=7)
 
@@ -16,7 +16,7 @@ def home():
     nifty_50_daily.get_index_price_history()
 
     bank_nifty_daily = levels.Daily("BANKNIFTY", start_date, end_date)
-    bank_nifty_daily.get_index_price_history()
+    bank_nifty_daily.get_index_price_history() 
 
     data = {}
     data['css'] = url_for('static', filename='css/bootstrap.min.css')
@@ -27,5 +27,18 @@ def home():
     
     return render_template('home.html', data = data)
 
+# @app.route('/weekly')
+def weekly():
+    end_date = datetime.datetime.today() + relativedelta(weekday=FR(-1))
+    start_date = end_date - timedelta(days=20)
+
+    nifty_50_weekly = levels.Weekly("NIFTY 50", start_date, end_date)
+    nifty_50_weekly.get_index_price_history()
+
+    bank_nifty_daily = levels.Weekly("BANKNIFTY", start_date, end_date)
+    bank_nifty_daily.get_index_price_history() 
+
+    print(nifty_50_weekly.angles())
+
 if __name__ == "__main__":
-    app.run()
+    weekly()
