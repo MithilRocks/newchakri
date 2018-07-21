@@ -1,7 +1,6 @@
 from nsepy import get_history
 from datetime import date, datetime, timedelta
 import pandas as pd
-from collections import d
 
 class Camrilla:
     
@@ -186,7 +185,6 @@ class Weekly(Levels):
             if date in weekly:
                 weekly[date]['Close'] = c
 
-        
 
         
 

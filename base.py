@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for
 from levels import levels
+from levels import levels2
 from datetime import date, timedelta
 import datetime
 import json
@@ -40,5 +41,11 @@ def weekly():
 
     print(nifty_50_weekly.angles())
 
+def new_daily():
+    end_date = datetime.datetime.now()
+    start_date = end_date - timedelta(days=7)
+    nifty_50_daily = levels2.Daily("NIFTY 50", start_date, end_date)
+    nifty_50_daily.main()
+
 if __name__ == "__main__":
-    weekly()
+    new_daily()
