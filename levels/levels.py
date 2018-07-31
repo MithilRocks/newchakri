@@ -1,6 +1,73 @@
 from nsepy import get_history
 from datetime import date, datetime, timedelta
 import pandas as pd
+from collections import deque
+
+class Levels:
+
+    def __init__(self, symbol, start_date, end_date):
+        self.symbol = symbol
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def get_index_history(self):
+        self.data = get_history(symbol=self.symbol, start=self.start_date, end=self.end_date, index=True)
+
+    def get_future_history(self):
+        pass
+
+    def averages(self, prices):
+        return round(sum(prices)/len(prices), 2)
+
+    def gann_angle(self, n1, n2):
+        return round((n1*2 - n2), 2)
+
+class Daily(Levels):
+    """
+    This function calculates the daily levels for specified symbols 
+    """
+    def __init__(self, symbol, start_date, end_date):
+        super().__init__(symbol, start_date, end_date)
+
+    def main(self):
+        """
+        The main function where the magic happens  
+        """
+        self.get_index_history()
+        highs = self.data['High'].to_dict()
+        lows = self.data['Low'].to_dict()
+        closes = self.data['Close'].to_dict()
+
+        average_highs = deque()
+        average_lows = deque()
+        average_closes = deque()
+
+        counter, daily = 0, {}
+        for date in highs:
+            average_highs.extend([highs[date]])
+            average_lows.extend([lows[date]])
+            average_closes.extend([closes[date]])
+
+            if counter >= 3:
+                average_highs.popleft()
+                average_lows.popleft()
+                average_closes.popleft()
+            
+            if len(average_highs) == 3:
+                daily[date] = {}
+                daily[date]['h2'] = self.averages(list(average_highs)[1:])
+                daily[date]['h3'] = self.averages(average_highs)
+            counter += 1
+
+        return daily
+
+class Weekly(Levels):
+
+    def __init__(self, symbol, start_date, end_date):
+        pass
+
+    def main(self):
+        pass
 
 class Camrilla:
     
@@ -56,136 +123,3 @@ class Pivot:
         ps3 = round(( ps2 - (pr2-pr1) ), 2)
 
         return {'pr1':pr1, 'pr2':pr2, 'pr3':pr3, 'p':p, 'ps1':ps1, 'ps2':ps2, 'ps3':ps3}
-
-class Levels:
-
-    def __init__(self, symbol, start=date(2015, 1, 1), end=date(2015, 1, 10)):
-        self.symbol = symbol
-        self.start_date = start
-        self.end_date = end
-
-    def get_index_price_history(self):
-        start = self.start_date - timedelta(days=7)
-        self.data = get_history(symbol=self.symbol, start=start, end=self.end_date, index=True)
-
-    def averages(self, prices_list=[]):
-        total = 0
-        for x in prices_list:
-            total += x 
-        
-        return round(total/len(prices_list), 2)
-    
-    def gann_angle(self, n1, n2):
-        return round((n1*2 - n2), 2)
-
-class Daily(Levels):
-
-    def __init__(self, symbol, start=date(2015, 1, 1), end=date(2015, 1, 10)):
-        super().__init__(symbol, start, end)
-
-    def angles(self):
-        # get all the highs
-        high = self.data['High'].values.tolist()
-        low = self.data['Low'].values.tolist()
-        close = self.data['Close'].values.tolist()
-
-        # take only relevant highs
-        num_of_days = pd.bdate_range(self.start_date, self.end_date).size
-        num_of_days += 2
-        high = high[-num_of_days::1]
-        close = close[-num_of_days::1]
-        low = low[-num_of_days::1]
-
-        # loop through start date to end date and find averages
-        i = 0
-        j = 1
-        k = 2
-        levels, camrilla, pivot = {}, {}, {}
-        
-        for single_date in pd.bdate_range(self.start_date, self.end_date):
-            levels[single_date.strftime("%Y-%m-%d")] = {}
-            levels[single_date.strftime("%Y-%m-%d")]["h2"] = str(self.averages(high[j:j+2]))
-            levels[single_date.strftime("%Y-%m-%d")]["h3"] = str(self.averages(high[i:i+3]))
-            levels[single_date.strftime("%Y-%m-%d")]["c2"] = str(self.averages(close[j:j+2]))
-            levels[single_date.strftime("%Y-%m-%d")]["c3"] = str(self.averages(close[i:i+3]))
-            levels[single_date.strftime("%Y-%m-%d")]["l2"] = str(self.averages(low[j:j+2]))
-            levels[single_date.strftime("%Y-%m-%d")]["l3"] = str(self.averages(low[i:i+3]))
-
-            levels[single_date.strftime("%Y-%m-%d")]["g1"] = str(self.gann_angle(high[k], close[k]))
-            levels[single_date.strftime("%Y-%m-%d")]["g2"] = str(self.gann_angle(close[k], low[k]))
-            levels[single_date.strftime("%Y-%m-%d")]["g3"] = str(self.gann_angle(low[k], close[k]))
-            levels[single_date.strftime("%Y-%m-%d")]["g4"] = str(self.gann_angle(close[k], high[k]))
-
-            camrilla_levels = Camrilla(high[k], low[k], close[k])
-
-            camrilla[single_date.strftime("%Y-%m-%d")] = {}
-            camrilla[single_date.strftime("%Y-%m-%d")]["r1"] = str(camrilla_levels.r1())
-            camrilla[single_date.strftime("%Y-%m-%d")]["r2"] = str(camrilla_levels.r2())
-            camrilla[single_date.strftime("%Y-%m-%d")]["r3"] = str(camrilla_levels.r3())
-            camrilla[single_date.strftime("%Y-%m-%d")]["r4"] = str(camrilla_levels.r4())
-            camrilla[single_date.strftime("%Y-%m-%d")]["r5"] = str(camrilla_levels.r5())
-            camrilla[single_date.strftime("%Y-%m-%d")]["s1"] = str(camrilla_levels.s1())
-            camrilla[single_date.strftime("%Y-%m-%d")]["s2"] = str(camrilla_levels.s2())
-            camrilla[single_date.strftime("%Y-%m-%d")]["s3"] = str(camrilla_levels.s3())
-            camrilla[single_date.strftime("%Y-%m-%d")]["s4"] = str(camrilla_levels.s4())
-            camrilla[single_date.strftime("%Y-%m-%d")]["s5"] = str(camrilla_levels.s5())
-
-            my_pivot = Pivot(high[k], low[k], close[k])
-            pivot[single_date.strftime("%Y-%m-%d")] = {}
-            pivot[single_date.strftime("%Y-%m-%d")] = my_pivot.pivot_levels()
-
-            i, j, k = i+1, j+1, k+1
-
-        return {'levels':levels, 'camrilla': camrilla, 'pivot': pivot}
-
-class Weekly(Levels):
-
-    def __init__(self, symbol, start=date(2015, 1, 1), end=date(2015, 1, 10)):
-        super().__init__(symbol, start, end)
-
-    def angles(self):
-        highs = self.data['High'].to_dict()
-        lows = self.data['Low'].to_dict()
-        closes = self.data['Close'].to_dict()
-
-        weekly, weekly_counter = {}, 0
-
-        for date, h in highs.items():
-            if weekly_counter == 0:
-                high = 0
-            
-            if h > high:
-                high = h
-
-            if weekly_counter == 4:
-                weekly[date] = {}
-                weekly[date]['High'] = high
-                weekly_counter = 0
-            else:
-                weekly_counter += 1
-
-        weekly_counter = 0
-
-        for date, l in lows.items():
-            if weekly_counter == 0:
-                low = l
-            
-            if l <= low:
-                low = l
-
-            if weekly_counter == 4:
-                weekly_counter = 0
-                weekly[date]['Low'] = low
-            else:
-                weekly_counter += 1
-
-        weekly_counter = 0
-        
-        for date, c in closes.items():
-            if date in weekly:
-                weekly[date]['Close'] = c
-
-
-        
-
-        
