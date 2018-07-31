@@ -43,6 +43,10 @@ class Daily(Levels):
         average_closes = deque()
 
         counter, daily = 0, {}
+        daily['levels'] = {}
+        daily['camrilla'] = {}
+        daily['pivot'] = {}
+        
         for date in highs:
             average_highs.extend([highs[date]])
             average_lows.extend([lows[date]])
@@ -54,9 +58,34 @@ class Daily(Levels):
                 average_closes.popleft()
             
             if len(average_highs) == 3:
-                daily[date] = {}
-                daily[date]['h2'] = self.averages(list(average_highs)[1:])
-                daily[date]['h3'] = self.averages(average_highs)
+                daily['levels'][date] = {}
+                daily['levels'][date]['h2'] = self.averages(list(average_highs)[1:])
+                daily['levels'][date]['h3'] = self.averages(average_highs)
+
+                daily['levels'][date]['c2'] = self.averages(list(average_closes)[1:])
+                daily['levels'][date]['c3'] = self.averages(average_closes)
+
+                daily['levels'][date]['l2'] = self.averages(list(average_lows)[1:])
+                daily['levels'][date]['l3'] = self.averages(average_lows)
+
+            daily['camrilla'][date] = {}
+
+            cam = Camrilla(highs[date], lows[date], closes[date])
+            pi = Pivot(highs[date], lows[date], closes[date])
+
+            daily['camrilla'][date]['r1'] = cam.r1()
+            daily['camrilla'][date]['r2'] = cam.r2()
+            daily['camrilla'][date]['r3'] = cam.r3()
+            daily['camrilla'][date]['r4'] = cam.r4()
+            daily['camrilla'][date]['r5'] = cam.r5()
+            daily['camrilla'][date]['s1'] = cam.s1()
+            daily['camrilla'][date]['s2'] = cam.s2()
+            daily['camrilla'][date]['s3'] = cam.s3()
+            daily['camrilla'][date]['s4'] = cam.s4()
+            daily['camrilla'][date]['s5'] = cam.s5()
+
+            daily['pivot'][date] = pi.pivot_levels()
+
             counter += 1
 
         return daily
