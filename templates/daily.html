@@ -1,12 +1,14 @@
 {% extends 'layout.html' %}
 {% block body_content %}
     <div class="jumbotron">
-
-        <h2 id="nif50daily-levels">Nifty 50 Daily (Gann)</h2>
+        <h2>{{ data['symbol'] }} Daily (Gann)</h2>
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">Date</th>
+                    <th scope="col">High</th>
+                    <th scope="col">Low</th>
+                    <th scope="col">Close</th>
                     <th scope="col">H2</th>
                     <th scope="col">H3</th>
                     <th scope="col">C2</th>
@@ -20,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for date, levels in data['nifty_50_daily']['levels'].items() %}
+                {% for date, levels in data['daily']['levels'].items() %}
                 <tr>
                 <th scope="row">{{ date }}</th>
                 {% for name, level in levels.items() %}
@@ -33,7 +35,7 @@
 
         <hr>
         
-        <h2>Nifty 50 Daily (Camrilla)</h2>
+        <h2>{{ data['symbol'] }} Daily (Camrilla)</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -51,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for date, levels in data['nifty_50_daily']['camrilla'].items() %}
+                {% for date, levels in data['daily']['camrilla'].items() %}
                 <tr>
                 <th scope="row">{{ date }}</th>
                 {% for name, level in levels.items() %}
@@ -64,7 +66,7 @@
 
         <hr>
 
-        <h2>Nifty 50 Daily (Pivot)</h2>
+        <h2>{{ data['symbol'] }} Daily (Pivot)</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -79,7 +81,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for date, levels in data['nifty_50_daily']['pivot'].items() %}
+                {% for date, levels in data['daily']['pivot'].items() %}
                 <tr>
                 <th scope="row">{{ date }}</th>
                 {% for name, level in levels.items() %}
@@ -91,93 +93,5 @@
         </table>
 
         <hr>
-
-        <h2>Bank Nifty Daily (Gann)</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">Date</th>
-                <th scope="col">H2</th>
-                <th scope="col">H3</th>
-                <th scope="col">C2</th>
-                <th scope="col">C3</th>
-                <th scope="col">L2</th>
-                <th scope="col">L3</th>
-                <th scope="col">G1</th>
-                <th scope="col">G2</th>
-                <th scope="col">G3</th>
-                <th scope="col">G4</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for date, levels in data['bank_nifty_daily']['levels'].items() %}
-                <tr>
-                <th scope="row">{{ date }}</th>
-                {% for name, level in levels.items() %}
-                <td>{{ level }}</td>
-                {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <hr>
-
-        <h2>Bank Nifty Daily (Camrilla)</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">R1</th>
-                    <th scope="col">R2</th>
-                    <th scope="col">R3</th>
-                    <th scope="col">R4</th>
-                    <th scope="col">R5</th>
-                    <th scope="col">S1</th>
-                    <th scope="col">S2</th>
-                    <th scope="col">S3</th>
-                    <th scope="col">S4</th>
-                    <th scope="col">S5</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for date, levels in data['bank_nifty_daily']['camrilla'].items() %}
-                <tr>
-                <th scope="row">{{ date }}</th>
-                {% for name, level in levels.items() %}
-                <td>{{ level }}</td>
-                {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <hr>
-
-        <h2>Bank Nifty Daily (Pivot)</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">PR1</th>
-                    <th scope="col">PR2</th>
-                    <th scope="col">PR3</th>
-                    <th scope="col">P</th>
-                    <th scope="col">PS1</th>
-                    <th scope="col">PS2</th>
-                    <th scope="col">PS3</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for date, levels in data['bank_nifty_daily']['pivot'].items() %}
-                <tr>
-                <th scope="row">{{ date }}</th>
-                {% for name, level in levels.items() %}
-                <td>{{ level }}</td>
-                {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 {% endblock %}
